@@ -1,19 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Card, Button, Form } from 'react-bootstrap';
 
 function App() {
-  const [posts, setPosts] = useState([
-    { id: 1, title: 'İlk Yazı', content: 'Bu benim ilk blog yazım!' },
-    { id: 2, title: 'Merhaba Dünya', content: 'React öğrenmeye başladım, heyecanlıyım!' }
-  ]);
-
+  const [posts, setPosts] = useState([]);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+
+  // localStorage'dan veri yükle
+  useEffect(() => {
+    const storedPosts = localStorage.getItem('posts');
+    if (storedPosts) {
+      setPosts(JSON.parse(storedPosts));
+    }
+  }, []);
+
+  // posts değiştiğinde localStorage'a kaydet
+  useEffect(() => {
+    localStorage.setItem('posts', JSON.stringify(posts));
+  }, [posts]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const newPost = {
-      id: Date.now(), // benzersiz id
+      id: Date.now(),
       title,
       content
     };
