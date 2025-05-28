@@ -7,6 +7,8 @@ function App() {
     { id: 2, title: 'Merhaba Dünya', content: 'React öğrenmeye başladım, heyecanlıyım!' }
   ]);
 
+  console.log(setPosts);
+
   return (
     <div style={{ padding: '20px' }}>
       <h1>Blog Uygulaması</h1>
