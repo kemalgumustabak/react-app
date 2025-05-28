@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Container, Card, Button, Form } from 'react-bootstrap';
 
 function App() {
   const [posts, setPosts] = useState([
@@ -13,8 +14,8 @@ function App() {
     e.preventDefault();
     const newPost = {
       id: posts.length + 1,
-      title: title,
-      content: content
+      title,
+      content
     };
     setPosts([newPost, ...posts]);
     setTitle('');
@@ -22,35 +23,39 @@ function App() {
   };
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h1>Blog Uygulaması</h1>
+    <Container className="py-4">
+      <h1 className="mb-4">Blog Uygulaması</h1>
 
-      <form onSubmit={handleSubmit} style={{ marginBottom: '20px' }}>
-        <input
-          type="text"
-          placeholder="Başlık"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          style={{ display: 'block', marginBottom: '10px', width: '300px' }}
-        />
-        <textarea
-          placeholder="İçerik"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          style={{ display: 'block', marginBottom: '10px', width: '300px', height: '100px' }}
-        />
-        <button type="submit">Yeni Yazı Ekle</button>
-      </form>
+      <Form onSubmit={handleSubmit} className="mb-4">
+        <Form.Group className="mb-2">
+          <Form.Control
+            type="text"
+            placeholder="Başlık"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+        </Form.Group>
+        <Form.Group className="mb-2">
+          <Form.Control
+            as="textarea"
+            placeholder="İçerik"
+            rows={3}
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+          />
+        </Form.Group>
+        <Button type="submit" variant="primary">Yeni Yazı Ekle</Button>
+      </Form>
 
-      <ul>
-        {posts.map(post => (
-          <li key={post.id} style={{ marginBottom: '10px' }}>
-            <h2>{post.title}</h2>
-            <p>{post.content}</p>
-          </li>
-        ))}
-      </ul>
-    </div>
+      {posts.map(post => (
+        <Card key={post.id} className="mb-3">
+          <Card.Body>
+            <Card.Title>{post.title}</Card.Title>
+            <Card.Text>{post.content}</Card.Text>
+          </Card.Body>
+        </Card>
+      ))}
+    </Container>
   );
 }
 
