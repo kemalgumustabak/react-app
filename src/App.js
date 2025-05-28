@@ -5,8 +5,8 @@ function App() {
   const [posts, setPosts] = useState([]);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const [editingId, setEditingId] = useState(null);
 
-  // localStorage'dan veri yükle
   useEffect(() => {
     const storedPosts = localStorage.getItem('posts');
     if (storedPosts) {
@@ -14,19 +14,30 @@ function App() {
     }
   }, []);
 
-  // posts değiştiğinde localStorage'a kaydet
   useEffect(() => {
     localStorage.setItem('posts', JSON.stringify(posts));
   }, [posts]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const newPost = {
-      id: Date.now(),
-      title,
-      content
-    };
-    setPosts([newPost, ...posts]);
+
+    if (editingId) {
+      // Düzenleme modu
+      const updatedPosts = posts.map(post =>
+        post.id === editingId ? { ...post, title, content } : post
+      );
+      setPosts(updatedPosts);
+      setEditingId(null);
+    } else {
+      // Yeni ekleme modu
+      const newPost = {
+        id: Date.now(),
+        title,
+        content
+      };
+      setPosts([newPost, ...posts]);
+    }
+
     setTitle('');
     setContent('');
   };
@@ -34,6 +45,12 @@ function App() {
   const handleDelete = (id) => {
     const updatedPosts = posts.filter(post => post.id !== id);
     setPosts(updatedPosts);
+  };
+
+  const handleEdit = (post) => {
+    setEditingId(post.id);
+    setTitle(post.title);
+    setContent(post.content);
   };
 
   return (
@@ -58,7 +75,9 @@ function App() {
             onChange={(e) => setContent(e.target.value)}
           />
         </Form.Group>
-        <Button type="submit" variant="primary">Yeni Yazı Ekle</Button>
+        <Button type="submit" variant="primary">
+          {editingId ? 'Kaydet' : 'Yeni Yazı Ekle'}
+        </Button>
       </Form>
 
       {posts.map(post => (
@@ -66,7 +85,16 @@ function App() {
           <Card.Body>
             <Card.Title>{post.title}</Card.Title>
             <Card.Text>{post.content}</Card.Text>
-            <Button variant="danger" onClick={() => handleDelete(post.id)}>Sil</Button>
+            <Button
+              variant="warning"
+              className="me-2"
+              onClick={() => handleEdit(post)}
+            >
+              Düzenle
+            </Button>
+            <Button variant="danger" onClick={() => handleDelete(post.id)}>
+              Sil
+            </Button>
           </Card.Body>
         </Card>
       ))}
