@@ -13,13 +13,18 @@ function App() {
   const handleSubmit = (e) => {
     e.preventDefault();
     const newPost = {
-      id: posts.length + 1,
+      id: Date.now(), // benzersiz id
       title,
       content
     };
     setPosts([newPost, ...posts]);
     setTitle('');
     setContent('');
+  };
+
+  const handleDelete = (id) => {
+    const updatedPosts = posts.filter(post => post.id !== id);
+    setPosts(updatedPosts);
   };
 
   return (
@@ -52,6 +57,7 @@ function App() {
           <Card.Body>
             <Card.Title>{post.title}</Card.Title>
             <Card.Text>{post.content}</Card.Text>
+            <Button variant="danger" onClick={() => handleDelete(post.id)}>Sil</Button>
           </Card.Body>
         </Card>
       ))}
